@@ -1,198 +1,322 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ICC World Test Championship 2025-2027</title>
-
+<title>IPL Match Schedule</title>
 <style>
-body{
-margin:0;
-padding:20px;
-background:#f2f2f2;
-font-family:Arial,Helvetica,sans-serif;
-}
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
 
-.container{
-max-width:900px;
-margin:auto;
-background:#fff;
-border-radius:12px;
-overflow:hidden;
-box-shadow:0 5px 15px rgba(0,0,0,.2);
-}
+  body {
+    background-color: #0d0630;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+  }
 
-.header{
-background:#000;
-color:#fff;
-text-align:center;
-padding:20px;
-}
+  .header {
+    width: 100%;
+    max-width: 450px;
+    background: linear-gradient(135deg, #180344, #08011c);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-.header h1{
-margin:0;
-font-size:38px;
-}
+  .header h1 {
+    font-size: 22px;
+    color: #00d2ff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
-.header h2{
-margin:5px 0 0;
-font-size:22px;
-color:#d4af37;
-}
+  .container {
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 
-table{
-width:100%;
-border-collapse:collapse;
-}
+  .card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 3px;
+    background: linear-gradient(135deg, #f39c12, #e74c3c, #8e44ad, #3498db);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  }
 
-thead{
-background:#111;
-color:#fff;
-}
+  .card-inner {
+    background: #ffffff;
+    border-radius: 21px;
+    overflow: hidden;
+    color: #333;
+  }
 
-th,td{
-padding:18px;
-text-align:center;
-font-size:22px;
-border-bottom:1px solid #ddd;
-}
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    font-weight: 700;
+    font-size: 15px;
+    color: #2c3e50;
+  }
 
-tbody tr:hover{
-background:#f7f7f7;
-}
+  .match-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #7f8c8d;
+    font-size: 13px;
+  }
 
-.team{
-font-weight:bold;
-color:#002366;
-}
+  .time-dot {
+    width: 12px;
+    height: 12px;
+    background-color: #bdc3c7;
+    border-radius: 50%;
+  }
 
-.points{
-padding:20px;
-background:#fafafa;
-font-size:22px;
-line-height:1.8;
-}
+  .banner {
+    background: linear-gradient(135deg, #120338 0%, #00052e 100%);
+    position: relative;
+    padding: 20px 10px;
+    text-align: center;
+    overflow: hidden;
+  }
 
-.points h3{
-margin-top:0;
-color:#000080;
-font-size:28px;
-}
+  .match-number-badge {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 12px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .teams-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 38%;
+  }
+
+  .team-logo-box {
+    width: 55px;
+    height: 55px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    margin-bottom: 8px;
+  }
+
+  .team-logo-box svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .team-name {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .vs-badge {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 900;
+    font-style: italic;
+  }
+
+  .card-footer {
+    padding: 15px;
+    text-align: center;
+    background: #ffffff;
+  }
+
+  .venue {
+    font-size: 15px;
+    font-weight: 800;
+    color: #1a252f;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .btn {
+    background: #1b025a;
+    color: #ffffff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
 </style>
 </head>
-
 <body>
 
-<div class="container">
-
 <div class="header">
-<h1>ICC WORLD TEST CHAMPIONSHIP</h1>
-<h2>2025–2027</h2>
+  <h1>IPL Match Schedule</h1>
 </div>
 
-<table>
+<div class="container" id="schedule-container"></div>
 
-<thead>
-<tr>
-<th>POS</th>
-<th>TEAM</th>
-<th>PLD</th>
-<th>PTS</th>
-<th>PCT</th>
-</tr>
-</thead>
+<script>
+const teamsData = {
+  CSK: { name: "Chennai Super Kings", bg: "#d4a017", svg: '<path fill="#fff" d="M30 20 L50 35 L70 20 L60 55 L80 40 L65 70 L50 60 L35 70 L20 40 L40 55 Z"/>' },
+  RCB: { name: "Royal Challengers Bengaluru", bg: "#be123c", svg: '<path fill="#fff" d="M30 25 C30 25 50 15 70 25 C70 45 60 75 50 85 C40 75 30 45 30 25 Z M45 40 L55 40 L50 55 Z"/>' },
+  MI: { name: "Mumbai Indians", bg: "#0284c7", svg: '<path fill="#fff" d="M50 20 L60 40 L80 50 L60 60 L50 80 L40 60 L20 50 L40 40 Z"/>' },
+  KKR: { name: "Kolkata Knight Riders", bg: "#4c1d95", svg: '<path fill="#fbbf24" d="M50 15 L75 30 L65 75 L50 85 L35 75 L25 30 Z M50 30 L60 50 L40 50 Z"/>' },
+  GT: { name: "Gujarat Titans", bg: "#0f172a", svg: '<polygon fill="#facc15" points="55,15 30,50 48,50 42,85 70,45 52,45"/>' },
+  RR: { name: "Rajasthan Royals", bg: "#db2777", svg: '<path fill="#fff" d="M20 35 L35 50 L50 25 L65 50 L80 35 L75 70 L25 70 Z M30 75 L70 75 L70 82 L30 82 Z"/>' },
+  SRH: { name: "Sunrisers Hyderabad", bg: "#ea580c", svg: '<path fill="#fff" d="M20 50 C20 30 80 30 80 50 C70 40 60 65 50 65 C40 65 30 40 20 50 Z M50 20 L55 30 L45 30 Z"/>' },
+  LSG: { name: "Lucknow Super Giants", bg: "#7f1d1d", svg: '<path fill="#fff" d="M50 15 L80 35 L65 70 L50 60 L35 70 L20 35 Z M40 40 L60 40 L50 55 Z"/>' },
+  DC: { name: "Delhi Capitals", bg: "#1e3a8a", svg: '<path fill="#fff" d="M30 40 L50 20 L70 40 L70 75 L30 75 Z M40 50 L60 50 L60 75 L40 75 Z"/>' },
+  PBKS: { name: "Punjab Kings", bg: "#dc2626", svg: '<path fill="#fff" d="M30 20 L70 20 L70 60 L50 80 L30 60 Z M42 35 L58 35 L58 50 L42 50 Z"/>' }
+};
 
-<tbody>
+const venuesData = {
+  CSK: "M. A. Chidambaram Stadium, Chennai",
+  RCB: "M. Chinnaswamy Stadium, Bengaluru",
+  MI: "Wankhede Stadium, Mumbai",
+  KKR: "Eden Gardens, Kolkata",
+  GT: "Narendra Modi Stadium, Ahmedabad",
+  RR: "Sawai Mansingh Stadium, Jaipur",
+  SRH: "Rajiv Gandhi Intl Stadium, Hyderabad",
+  LSG: "BRSABV Ekana Stadium, Lucknow",
+  DC: "Arun Jaitley Stadium, Delhi",
+  PBKS: "HPCA Stadium, Dharamshala"
+};
 
-<tr>
-<td>1</td>
-<td class="team">🇦🇺 Aus</td>
-<td>8</td>
-<td>84</td>
-<td>87.50</td>
-</tr>
+function getLogoSVG(code) {
+  const data = teamsData[code];
+  return `<div class="team-logo-box" style="background-color: ${data.bg};">
+    <svg viewBox="0 0 100 100">${data.svg}</svg>
+  </div>`;
+}
 
-<tr>
-<td>2</td>
-<td class="team">🇿🇦 SA</td>
-<td>4</td>
-<td>36</td>
-<td>75.00</td>
-</tr>
+// Generate raw matches pool
+let matchPool = [];
 
-<tr>
-<td>3</td>
-<td class="team">🇳🇿 NZ</td>
-<td>6</td>
-<td>52</td>
-<td>72.22</td>
-</tr>
+// 1. CSK vs RCB - 14 Matches
+for (let i = 0; i < 7; i++) {
+  matchPool.push({ team1: "CSK", team2: "RCB", venue: venuesData.CSK });
+  matchPool.push({ team1: "RCB", team2: "CSK", venue: venuesData.RCB });
+}
 
-<tr>
-<td>4</td>
-<td class="team">🇧🇩 BAN</td>
-<td>4</td>
-<td>28</td>
-<td>58.33</td>
-</tr>
+// 2. Remaining 8 teams - 2 matches each
+const otherTeams = ["MI", "KKR", "GT", "RR", "SRH", "LSG", "DC", "PBKS"];
+for (let i = 0; i < otherTeams.length; i++) {
+  for (let j = i + 1; j < otherTeams.length; j++) {
+    const t1 = otherTeams[i];
+    const t2 = otherTeams[j];
+    matchPool.push({ team1: t1, team2: t2, venue: venuesData[t1] });
+    matchPool.push({ team1: t2, team2: t1, venue: venuesData[t2] });
+  }
+}
 
-<tr>
-<td>5</td>
-<td class="team">🇮🇳 IND</td>
-<td>6</td>
-<td>36</td>
-<td>50.00</td>
-</tr>
+// Fixed Matches setup
+const match1Idx = matchPool.findIndex(m => m.team1 === "GT" && m.team2 === "RR");
+const match1 = matchPool.splice(match1Idx, 1)[0];
 
-<tr>
-<td>6</td>
-<td class="team">🇱🇰 SL</td>
-<td>4</td>
-<td>20</td>
-<td>41.67</td>
-</tr>
+const match5Idx = matchPool.findIndex(m => m.team1 === "CSK" && m.team2 === "RCB");
+const match5 = matchPool.splice(match5Idx, 1)[0];
 
-<tr>
-<td>7</td>
-<td class="team">🏴 ENG</td>
-<td>13</td>
-<td>38</td>
-<td>24.36</td>
-</tr>
+const finalSchedule = new Array(70);
+finalSchedule[0] = match1;
+finalSchedule[4] = match5;
 
-<tr>
-<td>8</td>
-<td class="team">🇵🇰 PAK</td>
-<td>6</td>
-<td>16</td>
-<td>22.22</td>
-</tr>
+let lastTeams = new Set([match1.team1, match1.team2]);
 
-<tr>
-<td>9</td>
-<td class="team">🌴 wi</td>
-<td>12</td>
-<td>30</td>
-<td>20.83</td>
-</tr>
+for (let slot = 1; slot < 70; slot++) {
+  if (slot === 4) {
+    lastTeams = new Set([match5.team1, match5.team2]);
+    continue;
+  }
 
-</tbody>
+  let foundIndex = -1;
+  for (let i = 0; i < matchPool.length; i++) {
+    const candidate = matchPool[i];
+    if (!lastTeams.has(candidate.team1) && !lastTeams.has(candidate.team2)) {
+      foundIndex = i;
+      break;
+    }
+  }
 
-</table>
+  if (foundIndex === -1) foundIndex = 0;
 
-<div class="points">
-<h3>Point System</h3>
+  const selectedMatch = matchPool.splice(foundIndex, 1)[0];
+  finalSchedule[slot] = selectedMatch;
+  lastTeams = new Set([selectedMatch.team1, selectedMatch.team2]);
+}
 
-✅ 12 Points for a Win<br>
-🤝 6 Points for a Tie<br>
-➖ 4 Points for a Draw<br><br>
+// Render Matches
+const container = document.getElementById("schedule-container");
 
-<b>Top Two Teams Progress to Final 2027.</b>
+finalSchedule.forEach((match, index) => {
+  const card = document.createElement("div");
+  card.className = "card";
+  
+  const dateStr = "Date: TBD";
+  const timeStr = index % 2 === 0 ? "3:30 pm IST" : "7:30 pm IST";
 
-</div>
-
-</div>
+  card.innerHTML = `
+    <div class="card-inner">
+      <div class="card-header">
+        <span>${dateStr}</span>
+        <div class="match-time">
+          <div class="time-dot"></div>
+          <span>${timeStr}</span>
+        </div>
+      </div>
+      <div class="banner">
+        <div class="match-number-badge">Match ${index + 1}</div>
+        <div class="teams-container">
+          <div class="team">
+            ${getLogoSVG(match.team1)}
+            <div class="team-name">${teamsData[match.team1].name}</div>
+          </div>
+          <div class="vs-badge">VS</div>
+          <div class="team">
+            ${getLogoSVG(match.team2)}
+            <div class="team-name">${teamsData[match.team2].name}</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="venue">${match.venue}</div>
+        <button class="btn">Match Preview &gt;</button>
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+});
+</script>
 
 </body>
 </html>
+
