@@ -1,2 +1,408 @@
-ins
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPL Match Schedule</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  body {
+    background-color: #0b0633;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+  }
+
+  .header {
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(135deg, #180344, #08011c);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .header h1 {
+    font-size: 20px;
+    color: #00d2ff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Outer Card Gradient Border */
+  .card {
+    background: linear-gradient(180deg, #facc15 0%, #ec4899 50%, #3b82f6 100%);
+    border-radius: 28px;
+    padding: 3px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .card-inner {
+    background: #ffffff;
+    border-radius: 25px;
+    overflow: hidden;
+    color: #000;
+  }
+
+  /* Header Section */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px 12px 24px;
+    background: #ffffff;
+  }
+
+  .match-date {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  .match-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .time-dot {
+    width: 14px;
+    height: 14px;
+    background-color: #d1d5db;
+    border-radius: 50%;
+  }
+
+  /* Banner Section */
+  .banner {
+    background: #0f0550;
+    position: relative;
+    padding: 12px 10px 20px 10px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .banner-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.9;
+  }
+
+  .match-number-badge {
+    background: #110842;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .teams-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+  }
+
+  /* Circular Logo Box */
+  .team-logo-box {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e5e7eb;
+    margin-bottom: 6px;
+    padding: 6px;
+  }
+
+  .team-logo-box svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .team-name {
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  }
+
+  .vs-badge {
+    color: #ffffff;
+    font-size: 32px;
+    font-weight: 900;
+    font-style: normal;
+    letter-spacing: 1px;
+  }
+
+  /* Footer Section */
+  .card-footer {
+    padding: 16px 20px 20px 20px;
+    text-align: center;
+    background: #ffffff;
+    position: relative;
+  }
+
+  .footer-pattern {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .venue {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0d1117;
+    margin-bottom: 16px;
+    line-height: 1.25;
+    position: relative;
+    z-index: 2;
+    padding: 0 10px;
+  }
+
+  .btn {
+    background: #0d0658;
+    color: #ffffff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(13, 6, 88, 0.3);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>IPL Match Schedule</h1>
+</div>
+
+<div class="container" id="schedule-container"></div>
+
+<script>
+const teamsData = {
+  CSK: { name: "Chennai Super Kings", svg: '<path fill="#d4a017" d="M30 20 L50 35 L70 20 L60 55 L80 40 L65 70 L50 60 L35 70 L20 40 L40 55 Z"/>' },
+  RCB: { name: "Royal Challengers Bengaluru", svg: '<path fill="#be123c" d="M30 25 C30 25 50 15 70 25 C70 45 60 75 50 85 C40 75 30 45 30 25 Z"/>' },
+  MI: { name: "Mumbai Indians", svg: '<path fill="#0284c7" d="M50 20 L60 40 L80 50 L60 60 L50 80 L40 60 L20 50 L40 40 Z"/>' },
+  KKR: { name: "Kolkata Knight Riders", svg: '<path fill="#4c1d95" d="M50 15 L75 30 L65 75 L50 85 L35 75 L25 30 Z"/>' },
+  GT: { name: "Gujarat Titans", svg: '<polygon fill="#0f172a" points="55,15 30,50 48,50 42,85 70,45 52,45"/>' },
+  RR: { name: "Rajasthan Royals", svg: '<path fill="#db2777" d="M20 35 L35 50 L50 25 L65 50 L80 35 L75 70 L25 70 Z"/>' },
+  SRH: { name: "Sunrisers Hyderabad", svg: '<path fill="#ea580c" d="M20 50 C20 30 80 30 80 50 C70 40 60 65 50 65 C40 65 30 40 20 50 Z"/>' },
+  LSG: { name: "Lucknow Super Giants", svg: '<path fill="#7f1d1d" d="M50 15 L80 35 L65 70 L50 60 L35 70 L20 35 Z"/>' },
+  DC: { name: "Delhi Capitals", svg: '<path fill="#1e3a8a" d="M30 40 L50 20 L70 40 L70 75 L30 75 Z"/>' },
+  PBKS: { name: "Punjab Kings", svg: '<path fill="#dc2626" d="M30 20 L70 20 L70 60 L50 80 L30 60 Z"/>' }
+};
+
+const venuesData = {
+  CSK: "M. A. Chidambaram Stadium, Chennai",
+  RCB: "M. Chinnaswamy Stadium, Bengaluru",
+  MI: "Wankhede Stadium, Mumbai",
+  KKR: "Eden Gardens, Kolkata",
+  GT: "Narendra Modi Stadium, Ahmedabad",
+  RR: "Sawai Mansingh Stadium, Jaipur",
+  SRH: "Rajiv Gandhi Intl Stadium, Hyderabad",
+  LSG: "BRSABV Ekana Stadium, Lucknow",
+  DC: "Arun Jaitley Stadium, Delhi",
+  PBKS: "HPCA Stadium, Dharamshala"
+};
+
+function getLogoSVG(code) {
+  return `<div class="team-logo-box">
+    <svg viewBox="0 0 100 100">${teamsData[code].svg}</svg>
+  </div>`;
+}
+
+// 1. Exactly 14 CSK vs RCB matches pool
+let cskRcbPool = [];
+for (let i = 0; i < 7; i++) {
+  cskRcbPool.push({ team1: "CSK", team2: "RCB", venue: venuesData.CSK });
+  cskRcbPool.push({ team1: "RCB", team2: "CSK", venue: venuesData.RCB });
+}
+
+// 2. Other teams match pool (56 matches)
+let otherMatchesPool = [];
+const otherTeams = ["MI", "KKR", "GT", "RR", "SRH", "LSG", "DC", "PBKS"];
+
+for (let i = 0; i < otherTeams.length; i++) {
+  for (let j = i + 1; j < otherTeams.length; j++) {
+    const t1 = otherTeams[i];
+    const t2 = otherTeams[j];
+    otherMatchesPool.push({ team1: t1, team2: t2, venue: venuesData[t1] });
+    otherMatchesPool.push({ team1: t2, team2: t1, venue: venuesData[t2] });
+  }
+}
+
+// Build 70-match Schedule with Rules:
+// - At every 6th & 7th slot interval, place back-to-back CSK vs RCB matches.
+// - Normal matches must respect at least 3-match rest gap between same teams.
+const schedule = new Array(70);
+
+function hasPlayedRecently(team, slot, minGap = 3) {
+  for (let s = Math.max(0, slot - minGap); s < slot; s++) {
+    if (schedule[s] && (schedule[s].team1 === team || schedule[s].team2 === team)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+let cskRcbDoubletCount = 0;
+
+for (let slot = 0; slot < 70; slot++) {
+  // Trigger back-to-back CSK vs RCB after 6 regular slots
+  const isCskRcbSlot = (slot % 8 === 6 || slot % 8 === 7) && cskRcbPool.length > 0;
+
+  if (isCskRcbSlot) {
+    schedule[slot] = cskRcbPool.shift();
+  } else {
+    // Find non-CSK/RCB match satisfying 3-match rest gap rule
+    let chosenIndex = -1;
+    for (let i = 0; i < otherMatchesPool.length; i++) {
+      const candidate = otherMatchesPool[i];
+      if (!hasPlayedRecently(candidate.team1, slot, 3) && !hasPlayedRecently(candidate.team2, slot, 3)) {
+        chosenIndex = i;
+        break;
+      }
+    }
+
+    if (chosenIndex !== -1) {
+      schedule[slot] = otherMatchesPool.splice(chosenIndex, 1)[0];
+    } else if (otherMatchesPool.length > 0) {
+      schedule[slot] = otherMatchesPool.shift();
+    } else if (cskRcbPool.length > 0) {
+      schedule[slot] = cskRcbPool.shift();
+    }
+  }
+}
+
+// Geometric SVGs for Banner and Footer Backgrounds
+const bgPatternsSVG = `
+  <svg class="banner-pattern" viewBox="0 0 400 150" preserveAspectRatio="none">
+    <path d="M-20 0 L40 60 L-20 120 Z" fill="#f59e0b" opacity="0.8"/>
+    <path d="M380 -10 L420 40 L360 80 Z" fill="#ec4899" opacity="0.8"/>
+    <path d="M120 110 L160 160 L200 110 L180 160 Z" fill="#f59e0b" opacity="0.9"/>
+    <path d="M220 110 L250 160 L280 110 Z" fill="#ec4899" opacity="0.9"/>
+  </svg>
+`;
+
+const footerPatternsSVG = `
+  <svg class="footer-pattern" viewBox="0 0 400 120" preserveAspectRatio="none">
+    <path d="M0 40 L30 10 L45 50 L20 80 L0 60 Z" fill="#f59e0b" opacity="0.8"/>
+    <path d="M0 80 L35 120 L0 120 Z" fill="#ec4899" opacity="0.8"/>
+    <path d="M370 40 L400 20 L400 80 L380 100 Z" fill="#8b5cf6" opacity="0.8"/>
+    <path d="M350 90 L400 120 L350 120 Z" fill="#ec4899" opacity="0.8"/>
+  </svg>
+`;
+
+// Render UI Cards
+const container = document.getElementById("schedule-container");
+
+const months = ["Aug", "Sep", "Oct"];
+let currentDate = new Date(2026, 7, 21); // Starts Aug 21, 2026
+
+schedule.forEach((match, index) => {
+  if (!match) return;
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const monthStr = months[currentDate.getMonth() - 7] || "Aug";
+  const dayName = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
+  const dayNum = currentDate.getDate();
+  const dateStr = `${monthStr}, ${dayName} ${dayNum}`;
+
+  const timeStr = index % 2 === 0 ? "3:00 pm IST" : "7:30 pm IST";
+
+  if (index % 2 === 1) {
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  card.innerHTML = `
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="match-date">${dateStr}</span>
+        <div class="match-time">
+          <div class="time-dot"></div>
+          <span>${timeStr}</span>
+        </div>
+      </div>
+      <div class="banner">
+        ${bgPatternsSVG}
+        <div class="match-number-badge">Match ${index + 1}</div>
+        <div class="teams-container">
+          <div class="team">
+            ${getLogoSVG(match.team1)}
+            <div class="team-name">${teamsData[match.team1].name}</div>
+          </div>
+          <div class="vs-badge">VS</div>
+          <div class="team">
+            ${getLogoSVG(match.team2)}
+            <div class="team-name">${teamsData[match.team2].name}</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        ${footerPatternsSVG}
+        <div class="venue">${match.venue}</div>
+        <button class="btn">Match Preview &gt;</button>
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+});
+</script>
+
+</body>
+</html>
 
