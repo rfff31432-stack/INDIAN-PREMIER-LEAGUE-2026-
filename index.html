@@ -1,2 +1,291 @@
-BABY 
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPL Schedule - UP T20 Style</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f4f6f9;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .schedule-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .match-card {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 3px solid #ff9900;
+      border-image: linear-gradient(135deg, #ff9900, #ff0055, #2e3192) 1;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    }
+    .card-header {
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      font-weight: 800;
+      color: #000000;
+      font-size: 14px;
+    }
+    .time-text {
+      color: #333333;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .time-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #cccccc;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .card-body {
+      background: linear-gradient(135deg, #050b5e, #1a237e);
+      padding: 20px 10px;
+      color: #ffffff;
+      text-align: center;
+      position: relative;
+    }
+    .match-number {
+      background: rgba(0,0,0,0.5);
+      padding: 4px 14px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .teams-vs {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .team {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* Points Table Style Square Logos */
+    .team-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .team-logo svg {
+      width: 30px;
+      height: 30px;
+      fill: #ffffff;
+    }
+    .team-name {
+      font-size: 13px;
+      font-weight: 700;
+      max-width: 110px;
+      line-height: 1.2;
+    }
+    .vs-badge {
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffcc00;
+      padding: 0 10px;
+      font-style: italic;
+    }
+    .card-footer {
+      background: #ffffff;
+      padding: 16px;
+      text-align: center;
+    }
+    .venue-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: #111111;
+      margin-bottom: 12px;
+    }
+    .preview-btn {
+      background: #100e68;
+      color: #ffffff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="schedule-container" id="schedule"></div>
+
+<script>
+// पॉइंट्स टेबल वाले स्क्वायर लोगो और उनके सिंबल
+const teamData = {
+  "Mumbai Indians": { 
+    bg: "#004ba0", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>` // Hurricane/Cyclone
+  },
+  "Kolkata Knight Riders": { 
+    bg: "#2e1437", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>` // Shield
+  },
+  "Gujarat Titans": { 
+    bg: "#0b1326", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>` // Lightning Bolt
+  },
+  "Rajasthan Royals": { 
+    bg: "#d6156c", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>` // Crown
+  },
+  "Lucknow Super Giants": { 
+    bg: "#6b0000", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>` // Helmet/Eagle
+  },
+  "Punjab Kings": { 
+    bg: "#dd1d25", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M12 2L4 5v6c0 5.25 3.4 10.2 8 11.5 4.6-1.3 8-6.25 8-11.5V5l-8-3zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/></svg>` // Shield
+  },
+  "Delhi Capitals": { 
+    bg: "#002f6c", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M12 1L2 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-10-5zm0 4a3 3 0 110 6 3 3 0 010-6z"/></svg>` // Dome/Capital
+  },
+  "Sunrisers Hyderabad": { 
+    bg: "#e64a19", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M12 2.59l5.7 5.7-1.42 1.42L13 6.41V16h-2V6.41l-3.28 3.3-1.42-1.42L12 2.59zM4 18h16v2H4z"/></svg>` // Eagle/Sun
+  },
+  "Royal Challengers Bengaluru": { 
+    bg: "#ba0c2f", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/></svg>` // Lion
+  },
+  "Chennai Super Kings": { 
+    bg: "#e0a100", 
+    svg: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>` // Lion
+  }
+};
+
+const matches = [
+  { id: "01", t1: "Mumbai Indians", t2: "Kolkata Knight Riders", venue: "Wankhede Stadium, Mumbai", date: "Date TBD", time: "TBD" },
+  { id: "02", t1: "Gujarat Titans", t2: "Rajasthan Royals", venue: "Narendra Modi Stadium, Ahemdabad", date: "Date TBD", time: "TBD" },
+  { id: "03", t1: "Lucknow Super Giants", t2: "Punjab Kings", venue: "Ekana Stadium, Lucknow", date: "Date TBD", time: "TBD" },
+  { id: "04", t1: "Delhi Capitals", t2: "Sunrisers Hyderabad", venue: "Arun Jaitley Stadium, Delhi", date: "Date TBD", time: "TBD" },
+  { id: "05", t1: "Kolkata Knight Riders", t2: "Gujarat Titans", venue: "Eden Gardens, Kolkata", date: "Date TBD", time: "TBD" },
+  { id: "06", t1: "Rajasthan Royals", t2: "Lucknow Super Giants", venue: "Sawai Mansingh Stadium, Jaipur", date: "Date TBD", time: "TBD" },
+  { id: "07", t1: "Punjab Kings", t2: "Delhi Capitals", venue: "HPCA Stadium, Dharamshala", date: "Date TBD", time: "TBD" },
+  { id: "08", t1: "Sunrisers Hyderabad", t2: "Mumbai Indians", venue: "MA Chidambaram Stadium, Chennai", date: "Date TBD", time: "TBD" },
+  { id: "09", t1: "Gujarat Titans", t2: "Lucknow Super Giants", venue: "Narendra Modi Stadium, Ahemdabad", date: "Date TBD", time: "TBD" },
+  { id: "10", t1: "Kolkata Knight Riders", t2: "Delhi Capitals", venue: "Eden Gardens, Kolkata", date: "Date TBD", time: "TBD" },
+  { id: "11", t1: "Rajasthan Royals", t2: "Punjab Kings", venue: "Sawai Mansingh Stadium, Jaipur", date: "Date TBD", time: "TBD" },
+  { id: "12", t1: "Mumbai Indians", t2: "Sunrisers Hyderabad", venue: "Wankhede Stadium, Mumbai", date: "Date TBD", time: "TBD" },
+  { id: "13", t1: "Lucknow Super Giants", t2: "Kolkata Knight Riders", venue: "Ekana Stadium, Lucknow", date: "Date TBD", time: "TBD" },
+  { id: "14", t1: "Delhi Capitals", t2: "Rajasthan Royals", venue: "Arun Jaitley Stadium, Delhi", date: "Date TBD", time: "TBD" },
+  { id: "15", t1: "Punjab Kings", t2: "Mumbai Indians", venue: "HPCA Stadium, Dharamshala", date: "Date TBD", time: "TBD" },
+  { id: "16", t1: "Sunrisers Hyderabad", t2: "Gujarat Titans", venue: "MA Chidambaram Stadium, Chennai", date: "Date TBD", time: "TBD" },
+  { id: "17", t1: "Rajasthan Royals", t2: "Kolkata Knight Riders", venue: "Sawai Mansingh Stadium, Jaipur", date: "Date TBD", time: "TBD" },
+  { id: "18", t1: "Mumbai Indians", t2: "Delhi Capitals", venue: "Wankhede Stadium, Mumbai", date: "Date TBD", time: "TBD" },
+  { id: "19", t1: "Gujarat Titans", t2: "Punjab Kings", venue: "Narendra Modi Stadium, Ahemdabad", date: "Date TBD", time: "TBD" },
+  { id: "20", t1: "Lucknow Super Giants", t2: "Sunrisers Hyderabad", venue: "Ekana Stadium, Lucknow", date: "Date TBD", time: "TBD" },
+  { id: "21", t1: "Kolkata Knight Riders", t2: "Punjab Kings", venue: "Eden Gardens, Kolkata", date: "Date TBD", time: "TBD" },
+  { id: "22", t1: "Delhi Capitals", t2: "Gujarat Titans", venue: "Arun Jaitley Stadium, Delhi", date: "Date TBD", time: "TBD" },
+  { id: "23", t1: "Sunrisers Hyderabad", t2: "Rajasthan Royals", venue: "MA Chidambaram Stadium, Chennai", date: "Date TBD", time: "TBD" },
+  { id: "24", t1: "Mumbai Indians", t2: "Lucknow Super Giants", venue: "Wankhede Stadium, Mumbai", date: "Date TBD", time: "TBD" },
+  { id: "25", t1: "Punjab Kings", t2: "Sunrisers Hyderabad", venue: "HPCA Stadium, Dharamshala", date: "Date TBD", time: "TBD" },
+  { id: "26", t1: "Gujarat Titans", t2: "Mumbai Indians", venue: "Narendra Modi Stadium, Ahemdabad", date: "Date TBD", time: "TBD" },
+  { id: "27", t1: "Kolkata Knight Riders", t2: "Rajasthan Royals", venue: "Eden Gardens, Kolkata", date: "Date TBD", time: "TBD" },
+  { id: "28", t1: "Delhi Capitals", t2: "Lucknow Super Giants", venue: "Arun Jaitley Stadium, Delhi", date: "Date TBD", time: "TBD" },
+  { id: "29", t1: "Sunrisers Hyderabad", t2: "Kolkata Knight Riders", venue: "MA Chidambaram Stadium, Chennai", date: "Date TBD", time: "TBD" },
+  { id: "30", t1: "Rajasthan Royals", t2: "Mumbai Indians", venue: "Sawai Mansingh Stadium, Jaipur", date: "Date TBD", time: "TBD" },
+  { id: "31", t1: "Lucknow Super Giants", t2: "Gujarat Titans", venue: "Ekana Stadium, Lucknow", date: "Date TBD", time: "TBD" },
+  { id: "32", t1: "Punjab Kings", t2: "Delhi Capitals", venue: "HPCA Stadium, Dharamshala", date: "Date TBD", time: "TBD" },
+  { id: "33", t1: "Kolkata Knight Riders", t2: "Mumbai Indians", venue: "Eden Gardens, Kolkata", date: "Date TBD", time: "TBD" },
+  { id: "34", t1: "Rajasthan Royals", t2: "Gujarat Titans", venue: "Sawai Mansingh Stadium, Jaipur", date: "Date TBD", time: "TBD" },
+  { id: "35", t1: "Punjab Kings", t2: "Lucknow Super Giants", venue: "HPCA Stadium, Dharamshala", date: "Date TBD", time: "TBD" },
+  { id: "36", t1: "Sunrisers Hyderabad", t2: "Delhi Capitals", venue: "MA Chidambaram Stadium, Chennai", date: "Date TBD", time: "TBD" },
+  { id: "37", t1: "Gujarat Titans", t2: "Kolkata Knight Riders", venue: "Narendra Modi Stadium, Ahemdabad", date: "Date TBD", time: "TBD" },
+  { id: "38", t1: "Lucknow Super Giants", t2: "Rajasthan Royals", venue: "Ekana Stadium, Lucknow", date: "Date TBD", time: "TBD" },
+  { id: "39", t1: "Delhi Capitals", t2: "Punjab Kings", venue: "Arun Jaitley Stadium, Delhi", date: "Date TBD", time: "TBD" },
+  { id: "40", t1: "Mumbai Indians", t2: "Sunrisers Hyderabad", venue: "Wankhede Stadium, Mumbai", date: "Date TBD", time: "TBD" },
+  { id: "41", t1: "Lucknow Super Giants", t2: "Mumbai Indians", venue: "Ekana Stadium, Lucknow", date: "Date TBD", time: "TBD" },
+  { id: "42", t1: "Kolkata Knight Riders", t2: "Sunrisers Hyderabad", venue: "Eden Gardens, Kolkata", date: "Date TBD", time: "TBD" },
+  { id: "43", t1: "Punjab Kings", t2: "Rajasthan Royals", venue: "HPCA Stadium, Dharamshala", date: "Date TBD", time: "TBD" },
+  { id: "44", t1: "Gujarat Titans", t2: "Delhi Capitals", venue: "Narendra Modi Stadium, Ahemdabad", date: "Date TBD", time: "TBD" },
+  { id: "45", t1: "Sunrisers Hyderabad", t2: "Lucknow Super Giants", venue: "MA Chidambaram Stadium, Chennai", date: "Date TBD", time: "TBD" },
+  { id: "46", t1: "Rajasthan Royals", t2: "Delhi Capitals", venue: "Sawai Mansingh Stadium, Jaipur", date: "Date TBD", time: "TBD" },
+  { id: "47", t1: "Mumbai Indians", t2: "Punjab Kings", venue: "Wankhede Stadium, Mumbai", date: "Date TBD", time: "TBD" },
+  { id: "48", t1: "Kolkata Knight Riders", t2: "Lucknow Super Giants", venue: "Eden Gardens, Kolkata", date: "Date TBD", time: "TBD" },
+  { id: "49", t1: "Delhi Capitals", t2: "Mumbai Indians", venue: "Arun Jaitley Stadium, Delhi", date: "Date TBD", time: "TBD" },
+  { id: "50", t1: "Punjab Kings", t2: "Gujarat Titans", venue: "HPCA Stadium, Dharamshala", date: "Date TBD", time: "TBD" },
+  { id: "51", t1: "Rajasthan Royals", t2: "Sunrisers Hyderabad", venue: "Sawai Mansingh Stadium, Jaipur", date: "Date TBD", time: "TBD" },
+  { id: "52", t1: "Gujarat Titans", t2: "Sunrisers Hyderabad", venue: "Narendra Modi Stadium, Ahemdabad", date: "Date TBD", time: "TBD" },
+  { id: "53", t1: "Delhi Capitals", t2: "Kolkata Knight Riders", venue: "Arun Jaitley Stadium, Delhi", date: "Date TBD", time: "TBD" },
+  { id: "54", t1: "Mumbai Indians", t2: "Gujarat Titans", venue: "Wankhede Stadium, Mumbai", date: "Date TBD", time: "TBD" },
+  { id: "55", t1: "Sunrisers Hyderabad", t2: "Punjab Kings", venue: "MA Chidambaram Stadium, Chennai", date: "Date TBD", time: "TBD" },
+  { id: "56", t1: "Lucknow Super Giants", t2: "Delhi Capitals", venue: "Ekana Stadium, Lucknow", date: "Date TBD", time: "TBD" }
+];
+
+const container = document.getElementById('schedule');
+
+matches.forEach((m) => {
+  const team1 = teamData[m.t1] || { bg: "#333", svg: "" };
+  const team2 = teamData[m.t2] || { bg: "#333", svg: "" };
+
+  const card = document.createElement('div');
+  card.className = 'match-card';
+  card.innerHTML = `
+    <div class="card-header">
+      <span>${m.date}</span>
+      <span class="time-text"><span class="time-dot"></span> ${m.time} IST</span>
+    </div>
+    <div class="card-body">
+      <div class="match-number">Match ${m.id}</div>
+      <div class="teams-vs">
+        <div class="team">
+          <div class="team-logo" style="background-color: ${team1.bg}">${team1.svg}</div>
+          <div class="team-name">${m.t1}</div>
+        </div>
+        <div class="vs-badge">VS</div>
+        <div class="team">
+          <div class="team-logo" style="background-color: ${team2.bg}">${team2.svg}</div>
+          <div class="team-name">${m.t2}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="venue-name">${m.venue}</div>
+      <button class="preview-btn">Match Preview &gt;</button>
+    </div>
+  `;
+  container.appendChild(card);
+});
+</script>
+
+</body>
+</html>
             
