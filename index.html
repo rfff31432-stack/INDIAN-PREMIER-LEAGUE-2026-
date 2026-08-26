@@ -1,2 +1,514 @@
-<      
-                <          <
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cricket Schedule & Points Tables with ICC Formula</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f2f4f5;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background-color: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding-bottom: 50px;
+    }
+
+    /* Teal Top Bar */
+    .top-bar {
+      background-color: #0b9e78;
+      color: white;
+      padding: 16px;
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .top-bar .back-arrow {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .admin-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      background-color: #0b9e78;
+      display: flex;
+      justify-content: space-around;
+      padding-bottom: 12px;
+      overflow-x: auto;
+    }
+
+    .tab {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding-bottom: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      color: #ffffff;
+      border-bottom: 3px solid #ffffff;
+    }
+
+    /* Tab Contents */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Points Table Styling */
+    .table-container {
+      padding: 12px;
+    }
+
+    .points-section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0b9e78;
+      margin: 16px 0 8px 4px;
+      text-transform: uppercase;
+    }
+
+    .points-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 13px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .points-table th {
+      background-color: #e8ecef;
+      color: #4a4a4a;
+      text-align: left;
+      padding: 10px 8px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .points-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #f2f4f5;
+      color: #222;
+    }
+
+    .points-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .team-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .flag-img {
+      width: 22px;
+      height: 15px;
+      object-fit: cover;
+      border-radius: 2px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    }
+
+    /* Series Wrapper with Gap */
+    .series-section {
+      margin-bottom: 35px;
+    }
+
+    .series-title-header {
+      background-color: #e8ecef;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0b9e78;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .date-header {
+      background-color: #f2f4f5;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4a4a4a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .match-card {
+      background-color: #ffffff;
+      padding: 14px 16px;
+      position: relative;
+      border-bottom: 8px solid #f2f4f5;
+    }
+
+    .match-info-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #888888;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .bell-icon {
+      color: #b0b0b0;
+      font-size: 16px;
+    }
+
+    .teams-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .team-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #222222;
+    }
+
+    .match-time {
+      color: #c88308;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* Admin Panel Styling */
+    .admin-panel {
+      display: none;
+      background: #fff;
+      padding: 16px;
+      margin: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border: 1px solid #0b9e78;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .admin-panel h3 {
+      color: #0b9e78;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #4a4a4a;
+      margin-bottom: 4px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .admin-submit-btn {
+      background-color: #0b9e78;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <!-- Header -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="back-arrow">&larr;</span>
+      <span>Cricket Central</span>
+    </div>
+    <button class="admin-btn" onclick="toggleAdminPanel()">Admin</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="nav-tabs">
+    <div class="tab active" onclick="switchTab('matches-tab', this)">MATCHES</div>
+    <div class="tab" onclick="switchTab('wtc-tab', this)">WTC TABLE</div>
+    <div class="tab" onclick="switchTab('odi-tab', this)">ODI TABLE</div>
+    <div class="tab" onclick="switchTab('t20-tab', this)">T20 TABLE</div>
+    <div class="tab" onclick="switchTab('stats-tab', this)">STATS</div>
+    <div class="tab" onclick="switchTab('squads-tab', this)">SQUADS</div>
+    <div class="tab" onclick="switchTab('news-tab', this)">NEWS</div>
+  </div>
+
+  <!-- ADMIN PANEL WITH ICC FORMULA -->
+  <div id="adminPanel" class="admin-panel">
+    <h3>Admin Management System</h3>
+    <div id="loginSection">
+      <div class="form-group">
+        <label>Admin Password (Password: admin)</label>
+        <input type="password" id="adminPasswordInput" placeholder="Enter password">
+      </div>
+      <button class="admin-submit-btn" onclick="verifyAdmin()">Login</button>
+    </div>
+
+    <div id="controlSection" style="display:none;">
+      <p style="color: green; font-weight: 600; margin-bottom: 10px;">Logged in successfully!</p>
+      
+      <!-- Match Schedule Add -->
+      <h4 style="font-size: 14px; color: #333; margin-bottom: 8px;">Add Match Schedule</h4>
+      <div class="form-group"><label>Series Title</label><input type="text" id="newSeriesTitle" placeholder="e.g. India Tour of Australia"></div>
+      <div class="form-group"><label>Match Info</label><input type="text" id="newMatchInfo" placeholder="1st T20I • Sydney"></div>
+      <div class="form-group"><label>Team 1</label><select id="newTeam1"><option value="India">India</option><option value="Australia">Australia</option><option value="Pakistan">Pakistan</option><option value="New Zealand">New Zealand</option><option value="South Africa">South Africa</option><option value="England">England</option><option value="Sri Lanka">Sri Lanka</option><option value="West Indies">West Indies</option><option value="Bangladesh">Bangladesh</option></select></div>
+      <div class="form-group"><label>Team 2</label><select id="newTeam2"><option value="Australia">Australia</option><option value="India">India</option><option value="Pakistan">Pakistan</option><option value="New Zealand">New Zealand</option><option value="South Africa">South Africa</option><option value="England">England</option><option value="Sri Lanka">Sri Lanka</option><option value="West Indies">West Indies</option><option value="Bangladesh">Bangladesh</option></select></div>
+      <div class="form-group"><label>Team 1 Score</label><input type="text" id="team1Score" placeholder="Score"></div>
+      <div class="form-group"><label>Team 2 Score</label><input type="text" id="team2Score" placeholder="Score"></div>
+      <div class="form-group"><label>Date</label><input type="text" id="newMatchDate" placeholder="FRI, 4 Sep 2026"></div>
+      <div class="form-group"><label>Result</label><input type="text" id="newMatchTime" placeholder="Won by..."></div>
+      <button class="admin-submit-btn" onclick="addNewMatch()">Add Match</button>
+
+      <!-- ICC FORMULA POINTS TABLE UPDATER -->
+      <hr style="margin: 16px 0; border:0; border-top:1px solid #ddd;">
+      <h4 style="font-size: 14px; color: #0b9e78; margin-bottom: 6px;">ICC Formula Points Table Updater</h4>
+      <p style="font-size: 11px; color: #666; margin-bottom: 8px;">मैच खेले बिना किसी भी टीम के आंकड़े दर्ज करें, ICC फॉर्मूला (PCT/Rating) अपने आप लग जाएगा।</p>
+      
+      <div class="form-group">
+        <label>Target Table</label>
+        <select id="iccTableType">
+          <option value="wtcTableBody">WTC Table (Test - Uses Percentage Formula)</option>
+          <option value="odiTableBody">ODI Table (Uses Rating Formula)</option>
+          <option value="t20TableBody">T20 Table (Uses Rating Formula)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Team Code</label>
+        <select id="iccTeamCode">
+          <option value="AUS">AUS</option><option value="IND">IND</option><option value="PAK">PAK</option><option value="NZ">NZ</option><option value="SA">SA</option><option value="ENG">ENG</option><option value="SL">SL</option><option value="WI">WI</option><option value="BAN">BAN</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Matches Played (PLD)</label>
+        <input type="number" id="iccPld" placeholder="e.g. 10">
+      </div>
+
+      <div class="form-group">
+        <label>Total Points (PTS)</label>
+        <input type="number" id="iccPts" placeholder="e.g. 72">
+      </div>
+
+      <button class="admin-submit-btn" style="background-color: #2b6cb0;" onclick="applyIccFormulaUpdate()">Apply ICC Formula & Update Table</button>
+    </div>
+  </div>
+
+  <!-- ================= TAB 1: MATCHES ================= -->
+  <div id="matches-tab" class="tab-content active">
+    <div id="dynamicMatchContainer">
+      <div class="series-section">
+        <div class="series-title-header">India tour of Sri Lanka 2026</div>
+        <div class="date-header">WED, 12 Aug 2026 - FRI, 21 Aug 2026</div>
+        <div class="match-card">
+          <div class="match-info-top"><span>1st Test &bull; Galle</span><span class="bell-icon">&#128276;</span></div>
+          <div class="teams-container">
+            <div class="team-row"><img class="flag-img" src="https://flagcdn.com/w40/lk.png"><span>Sri Lanka &nbsp;&nbsp;&nbsp;&nbsp; 483 & 610-8</span></div>
+            <div class="team-row"><img class="flag-img" src="https://flagcdn.com/w40/in.png"><span>India &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 458 & 634</span></div>
+          </div>
+          <div class="match-time">Sri Lanka Won by 2 wkts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB 2: WTC TABLE ================= -->
+  <div id="wtc-tab" class="tab-content">
+    <div class="table-container">
+      <div class="points-section-title">ICC World Test Championship 2025-2027</div>
+      <table class="points-table">
+        <thead><tr><th>POS</th><th>TEAM</th><th>PLD</th><th>PTS</th><th>PCT</th></tr></thead>
+        <tbody id="wtcTableBody">
+          <tr><td>1</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/au.png"><span>AUS</span></div></td><td>8</td><td>84</td><td>87.50</td></tr>
+          <tr><td>2</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/za.png"><span>SA</span></div></td><td>4</td><td>36</td><td>75.00</td></tr>
+          <tr><td>3</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/nz.png"><span>NZ</span></div></td><td>6</td><td>52</td><td>72.22</td></tr>
+          <tr><td>4</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/bd.png"><span>BAN</span></div></td><td>4</td><td>28</td><td>58.33</td></tr>
+          <tr><td>5</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/in.png"><span>IND</span></div></td><td>6</td><td>36</td><td>50.00</td></tr>
+          <tr><td>6</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/lk.png"><span>SL</span></div></td><td>4</td><td>20</td><td>41.67</td></tr>
+          <tr><td>7</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/gb-eng.png"><span>ENG</span></div></td><td>14</td><td>40</td><td>29.74</td></tr>
+          <tr><td>8</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/jm.png"><span>WI</span></div></td><td>11</td><td>18</td><td>13.63</td></tr>
+          <tr><td>9</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/pk.png"><span>PAK</span></div></td><td>4</td><td>4</td><td>8.33</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= TAB 3: ODI TABLE ================= -->
+  <div id="odi-tab" class="tab-content">
+    <div class="table-container">
+      <div class="points-section-title">ICC Men's ODI Rankings Table</div>
+      <table class="points-table">
+        <thead><tr><th>POS</th><th>TEAM</th><th>PLD</th><th>PTS</th><th>RATING</th></tr></thead>
+        <tbody id="odiTableBody">
+          <tr><td>1</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/in.png"><span>IND</span></div></td><td>30</td><td>3500</td><td>117</td></tr>
+          <tr><td>2</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/au.png"><span>AUS</span></div></td><td>28</td><td>3200</td><td>114</td></tr>
+          <tr><td>3</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/za.png"><span>SA</span></div></td><td>26</td><td>2800</td><td>108</td></tr>
+          <tr><td>4</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/pk.png"><span>PAK</span></div></td><td>27</td><td>2750</td><td>102</td></tr>
+          <tr><td>5</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/gb-eng.png"><span>ENG</span></div></td><td>25</td><td>2500</td><td>100</td></tr>
+          <tr><td>6</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/nz.png"><span>NZ</span></div></td><td>26</td><td>2550</td><td>98</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= TAB 4: T20 TABLE ================= -->
+  <div id="t20-tab" class="tab-content">
+    <div class="table-container">
+      <div class="points-section-title">ICC Men's T20I Rankings Table</div>
+      <table class="points-table">
+        <thead><tr><th>POS</th><th>TEAM</th><th>PLD</th><th>PTS</th><th>RATING</th></tr></thead>
+        <tbody id="t20TableBody">
+          <tr><td>1</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/in.png"><span>IND</span></div></td><td>35</td><td>9200</td><td>263</td></tr>
+          <tr><td>2</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/au.png"><span>AUS</span></div></td><td>32</td><td>8100</td><td>253</td></tr>
+          <tr><td>3</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/gb-eng.png"><span>ENG</span></div></td><td>30</td><td>7400</td><td>247</td></tr>
+          <tr><td>4</td><td><div class="team-cell"><img class="flag-img" src="https://flagcdn.com/w40/za.png"><span>SA</span></div></td><td>28</td><td>6700</td><td>239</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- OTHER TABS -->
+  <div id="stats-tab" class="tab-content"><div style="padding: 20px; text-align:center; color:#666;">Stats</div></div>
+  <div id="squads-tab" class="tab-content"><div style="padding: 20px; text-align:center; color:#666;">Squads</div></div>
+  <div id="news-tab" class="tab-content"><div style="padding: 20px; text-align:center; color:#666;">News</div></div>
+
+</div>
+
+<script>
+  const countryFlags = {
+    "India": "https://flagcdn.com/w40/in.png", "Australia": "https://flagcdn.com/w40/au.png",
+    "Pakistan": "https://flagcdn.com/w40/pk.png", "New Zealand": "https://flagcdn.com/w40/nz.png",
+    "South Africa": "https://flagcdn.com/w40/za.png", "England": "https://flagcdn.com/w40/gb-eng.png",
+    "Sri Lanka": "https://flagcdn.com/w40/lk.png", "West Indies": "https://flagcdn.com/w40/jm.png",
+    "Bangladesh": "https://flagcdn.com/w40/bd.png"
+  };
+
+  function switchTab(tabId, element) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    element.classList.add('active');
+  }
+
+  function toggleAdminPanel() {
+    document.getElementById('adminPanel').classList.toggle('active');
+  }
+
+  function verifyAdmin() {
+    if (document.getElementById('adminPasswordInput').value === 'admin') {
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('controlSection').style.display = 'block';
+    } else {
+      alert('गलत पासवर्ड!');
+    }
+  }
+
+  function addNewMatch() {
+    const seriesTitle = document.getElementById('newSeriesTitle').value || "Series";
+    const matchInfo = document.getElementById('newMatchInfo').value || "Match";
+    const team1 = document.getElementById('newTeam1').value;
+    const team2 = document.getElementById('newTeam2').value;
+    const t1Score = document.getElementById('team1Score').value || "-";
+    const t2Score = document.getElementById('team2Score').value || "-";
+    const matchDate = document.getElementById('newMatchDate').value || "UPCOMING";
+    const matchTime = document.getElementById('newMatchTime').value || "Result";
+
+    if (team1 === team2) { alert("टीम 1 और टीम 2 एक नहीं हो सकतीं!"); return; }
+
+    const container = document.getElementById('dynamicMatchContainer');
+    const html = `
+      <div class="series-section">
+        <div class="series-title-header">${seriesTitle}</div>
+        <div class="date-header">${matchDate}</div>
+        <div class="match-card">
+          <div class="match-info-top"><span>${matchInfo}</span><span class="bell-icon">&#128276;</span></div>
+          <div class="teams-container">
+            <div class="team-row"><img class="flag-img" src="${countryFlags[team1]}"><span>${team1} &nbsp;&nbsp;&nbsp;&nbsp; ${t1Score}</span></div>
+            <div class="team-row"><img class="flag-img" src="${countryFlags[team2]}"><span>${team2} &nbsp;&nbsp;&nbsp;&nbsp; ${t2Score}</span></div>
+          </div>
+          <div class="match-time">${matchTime}</div>
+        </div>
+      </div>`;
+    container.insertAdjacentHTML('beforeend', html);
+    alert("नया मैच जोड़ दिया गया है!");
+  }
+
+  // --- OFFICIAL ICC FORMULA LOGIC ---
+  function applyIccFormulaUpdate() {
+    const tableId = document.getElementById('iccTableType').value;
+    const teamCode = document.getElementById('iccTeamCode').value;
+    const pld = parseFloat(document.getElementById('iccPld').value) || 0;
+    const pts = parseFloat(document.getElementById('iccPts').value) || 0;
+
+    const tbody = document.getElementById(tableId);
+    let rows = Array.from(tbody.getElementsByTagName('tr'));
+    let targ
