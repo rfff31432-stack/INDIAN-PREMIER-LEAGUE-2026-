@@ -1,1 +1,341 @@
-<    .11
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cricket Rankings & Schedule</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f2f4f5;
+      color: #333;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background-color: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding-bottom: 50px;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      background-color: #0b9e78;
+      color: white;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .admin-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid white;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Main Navigation Tabs */
+    .nav-tabs {
+      background-color: #0b9e78;
+      display: flex;
+      justify-content: space-around;
+      padding-bottom: 10px;
+    }
+
+    .tab {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding-bottom: 4px;
+    }
+
+    .tab.active {
+      color: #ffffff;
+      border-bottom: 3px solid #ffffff;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Sub Tabs (TEST, ODI, T20) */
+    .sub-tabs-container {
+      display: flex;
+      justify-content: center;
+      background-color: #ffffff;
+      padding: 12px;
+      gap: 5px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .sub-tab {
+      border: 2px solid #0b9e78;
+      color: #0b9e78;
+      padding: 6px 20px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 2px;
+      background: white;
+    }
+
+    .sub-tab.active {
+      background-color: #0b9e78;
+      color: white;
+    }
+
+    .sub-content {
+      display: none;
+    }
+
+    .sub-content.active {
+      display: block;
+    }
+
+    /* Rankings Table Styling */
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .rank-table th {
+      color: #777;
+      text-align: left;
+      padding: 12px 10px;
+      font-weight: 600;
+      font-size: 12px;
+      border-bottom: 1px solid #eee;
+      background: #fafafa;
+    }
+
+    .rank-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #f2f2f2;
+      color: #222;
+    }
+
+    .team-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .team-name-main {
+      font-weight: 600;
+      font-size: 14px;
+      color: #111;
+    }
+
+    .team-matches-sub {
+      font-size: 11px;
+      color: #777;
+      margin-top: 2px;
+    }
+
+    .flag-img {
+      width: 26px;
+      height: 18px;
+      object-fit: cover;
+      border-radius: 2px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    }
+
+    /* Match Schedule Styling */
+    .match-card {
+      background: #fff;
+      padding: 14px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .match-header { font-size: 12px; color: #777; margin-bottom: 6px; display: flex; justify-content: space-between;}
+    .match-teams { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: flex; justify-content: space-between;}
+    .match-time-info { font-size: 11px; color: #c88308; font-weight: 600; }
+
+    /* Admin Panel Styling */
+    .admin-panel {
+      display: none;
+      background: #fff;
+      padding: 16px;
+      margin: 12px;
+      border-radius: 8px;
+      border: 2px solid #0b9e78;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .admin-panel.active { display: block; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #444; margin-bottom: 3px; }
+    .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+    .admin-btn-action { background-color: #0b9e78; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <!-- Header -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span>&larr;</span>
+      <span>Cricket Central</span>
+    </div>
+    <button class="admin-btn" onclick="toggleAdminPanel()">Admin</button>
+  </div>
+
+  <!-- Main Tabs -->
+  <div class="nav-tabs">
+    <div class="tab active" onclick="switchMainTab('matches-tab', this)">MATCHES</div>
+    <div class="tab" onclick="switchMainTab('rankings-tab', this)">POINTS TABLE (RANKINGS)</div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel" class="admin-panel">
+    <h3 style="color: #0b9e78; margin-bottom: 10px; font-size: 15px;">Admin Dashboard</h3>
+    <div id="loginSec">
+      <div class="form-group"><label>Password (Type: admin)</label><input type="password" id="adminPwd" placeholder="Password"></div>
+      <button class="admin-btn-action" onclick="loginAdmin()">Login</button>
+    </div>
+
+    <div id="controlSec" style="display:none;">
+      <p style="color: green; font-size: 12px; font-weight: bold; margin-bottom: 10px;">✔ Logged In Successfully</p>
+      
+      <!-- Add Match Schedule -->
+      <h4 style="font-size: 13px; color: #333; margin-bottom: 6px;">Add Match Schedule</h4>
+      <div class="form-group"><label>Series Name</label><input type="text" id="mSeries" placeholder="e.g. India Tour of Australia 2026"></div>
+      <div class="form-group"><label>Team 1 Name</label><input type="text" id="mTeam1" placeholder="e.g. India"></div>
+      <div class="form-group"><label>Team 2 Name</label><input type="text" id="mTeam2" placeholder="e.g. Australia"></div>
+      <div class="form-group"><label>Match Date</label><input type="text" id="mDate" placeholder="FRI, 28 Aug 2026"></div>
+      <div class="form-group"><label>Match Time</label><input type="text" id="mTime" placeholder="02:30 PM IST"></div>
+      <button class="admin-btn-action" onclick="addNewMatchSchedule()">Add Match</button>
+
+      <hr style="margin: 14px 0; border:0; border-top:1px solid #ddd;">
+      
+      <!-- Table Update ICC Formula -->
+      <h4 style="font-size: 13px; color: #0b9e78; margin-bottom: 6px;">Table Update ICC Formula</h4>
+      <div class="form-group">
+        <label>Select Format</label>
+        <select id="iccFormat" onchange="populateTeamDropdowns()">
+          <option value="testTbody">TEST (WTC)</option>
+          <option value="odiTbody">ODI</option>
+          <option value="t20Tbody">T20I</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Select Team 1 from Table</label>
+        <select id="iccTeam1Select"></select>
+      </div>
+      <div class="form-group">
+        <label>Select Team 2 from Table</label>
+        <select id="iccTeam2Select"></select>
+      </div>
+      <div class="form-group"><label>Matches Played (for Team 1)</label><input type="number" id="iccMatches" placeholder="33"></div>
+      <div class="form-group"><label>Total Points (for Team 1)</label><input type="number" id="iccPoints" placeholder="3841"></div>
+      <button class="admin-btn-action" style="background-color: #2b6cb0;" onclick="updateIccTable()">Update Table via ICC Formula</button>
+    </div>
+  </div>
+
+  <!-- TAB 1: MATCHES SCHEDULE -->
+  <div id="matches-tab" class="tab-content active">
+    <div id="matchListContainer">
+      <div class="match-card">
+        <div class="match-header"><span>India Tour of Sri Lanka</span><span>Upcoming</span></div>
+        <div class="match-teams"><span>🇮🇳 India</span><span>vs</span><span>🇱🇰 Sri Lanka</span></div>
+        <div class="match-time-info">📅 28 Aug 2026 &nbsp;&bull;&nbsp; 🕒 02:30 PM IST</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: TEAMS RANKINGS -->
+  <div id="rankings-tab" class="tab-content">
+    
+    <div class="sub-tabs-container">
+      <button class="sub-tab active" onclick="switchSubTab('test-content', this)">TEST</button>
+      <button class="sub-tab" onclick="switchSubTab('odi-content', this)">ODI</button>
+      <button class="sub-tab" onclick="switchSubTab('t20-content', this)">T20</button>
+    </div>
+
+    <!-- TEST (WTC) TABLE - 9 Teams -->
+    <div id="test-content" class="sub-content active">
+      <table class="rank-table">
+        <thead><tr><th>Rank</th><th>TEAM</th><th style="text-align:right;">Ratings</th><th style="text-align:right;">Points</th></tr></thead>
+        <tbody id="testTbody">
+          <tr><td>1</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/au.png"><div><div class="team-name-main">Australia</div><div class="team-matches-sub">Matches: 8</div></div></div></td><td style="text-align:right; font-weight:600;">108</td><td style="text-align:right; color:#555;">84</td></tr>
+          <tr><td>2</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/za.png"><div><div class="team-name-main">South Africa</div><div class="team-matches-sub">Matches: 4</div></div></div></td><td style="text-align:right; font-weight:600;">105</td><td style="text-align:right; color:#555;">36</td></tr>
+          <tr><td>3</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/nz.png"><div><div class="team-name-main">New Zealand</div><div class="team-matches-sub">Matches: 6</div></div></div></td><td style="text-align:right; font-weight:600;">102</td><td style="text-align:right; color:#555;">52</td></tr>
+          <tr><td>4</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/bd.png"><div><div class="team-name-main">Bangladesh</div><div class="team-matches-sub">Matches: 4</div></div></div></td><td style="text-align:right; font-weight:600;">95</td><td style="text-align:right; color:#555;">28</td></tr>
+          <tr><td>5</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/in.png"><div><div class="team-name-main">India</div><div class="team-matches-sub">Matches: 6</div></div></div></td><td style="text-align:right; font-weight:600;">90</td><td style="text-align:right; color:#555;">36</td></tr>
+          <tr><td>6</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/lk.png"><div><div class="team-name-main">Sri Lanka</div><div class="team-matches-sub">Matches: 4</div></div></div></td><td style="text-align:right; font-weight:600;">88</td><td style="text-align:right; color:#555;">20</td></tr>
+          <tr><td>7</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/gb-eng.png"><div><div class="team-name-main">England</div><div class="team-matches-sub">Matches: 14</div></div></div></td><td style="text-align:right; font-weight:600;">82</td><td style="text-align:right; color:#555;">40</td></tr>
+          <tr><td>8</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/jm.png"><div><div class="team-name-main">West Indies</div><div class="team-matches-sub">Matches: 11</div></div></div></td><td style="text-align:right; font-weight:600;">75</td><td style="text-align:right; color:#555;">18</td></tr>
+          <tr><td>9</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/pk.png"><div><div class="team-name-main">Pakistan</div><div class="team-matches-sub">Matches: 4</div></div></div></td><td style="text-align:right; font-weight:600;">70</td><td style="text-align:right; color:#555;">4</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ODI TABLE - 18 Teams -->
+    <div id="odi-content" class="sub-content">
+      <table class="rank-table">
+        <thead><tr><th>Rank</th><th>TEAM</th><th style="text-align:right;">Ratings</th><th style="text-align:right;">Points</th></tr></thead>
+        <tbody id="odiTbody">
+          <tr><td>1</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/in.png"><div><div class="team-name-main">India</div><div class="team-matches-sub">Matches: 30</div></div></div></td><td style="text-align:right; font-weight:600;">117</td><td style="text-align:right; color:#555;">3500</td></tr>
+          <tr><td>2</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/au.png"><div><div class="team-name-main">Australia</div><div class="team-matches-sub">Matches: 28</div></div></div></td><td style="text-align:right; font-weight:600;">114</td><td style="text-align:right; color:#555;">3200</td></tr>
+          <tr><td>3</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/pk.png"><div><div class="team-name-main">Pakistan</div><div class="team-matches-sub">Matches: 27</div></div></div></td><td style="text-align:right; font-weight:600;">107</td><td style="text-align:right; color:#555;">2890</td></tr>
+          <tr><td>4</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/za.png"><div><div class="team-name-main">South Africa</div><div class="team-matches-sub">Matches: 26</div></div></div></td><td style="text-align:right; font-weight:600;">105</td><td style="text-align:right; color:#555;">2730</td></tr>
+          <tr><td>5</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/gb-eng.png"><div><div class="team-name-main">England</div><div class="team-matches-sub">Matches: 25</div></div></div></td><td style="text-align:right; font-weight:600;">102</td><td style="text-align:right; color:#555;">2550</td></tr>
+          <tr><td>6</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/nz.png"><div><div class="team-name-main">New Zealand</div><div class="team-matches-sub">Matches: 26</div></div></div></td><td style="text-align:right; font-weight:600;">98</td><td style="text-align:right; color:#555;">2548</td></tr>
+          <tr><td>7</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/lk.png"><div><div class="team-name-main">Sri Lanka</div><div class="team-matches-sub">Matches: 29</div></div></div></td><td style="text-align:right; font-weight:600;">92</td><td style="text-align:right; color:#555;">2668</td></tr>
+          <tr><td>8</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/bd.png"><div><div class="team-name-main">Bangladesh</div><div class="team-matches-sub">Matches: 28</div></div></div></td><td style="text-align:right; font-weight:600;">87</td><td style="text-align:right; color:#555;">2436</td></tr>
+          <tr><td>9</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/af.png"><div><div class="team-name-main">Afghanistan</div><div class="team-matches-sub">Matches: 24</div></div></div></td><td style="text-align:right; font-weight:600;">84</td><td style="text-align:right; color:#555;">2016</td></tr>
+          <tr><td>10</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/jm.png"><div><div class="team-name-main">West Indies</div><div class="team-matches-sub">Matches: 24</div></div></div></td><td style="text-align:right; font-weight:600;">78</td><td style="text-align:right; color:#555;">1872</td></tr>
+          <tr><td>11</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/ie.png"><div><div class="team-name-main">Ireland</div><div class="team-matches-sub">Matches: 22</div></div></div></td><td style="text-align:right; font-weight:600;">55</td><td style="text-align:right; color:#555;">1210</td></tr>
+          <tr><td>12</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/zw.png"><div><div class="team-name-main">Zimbabwe</div><div class="team-matches-sub">Matches: 20</div></div></div></td><td style="text-align:right; font-weight:600;">50</td><td style="text-align:right; color:#555;">1000</td></tr>
+          <tr><td>13</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/nl.png"><div><div class="team-name-main">Netherlands</div><div class="team-matches-sub">Matches: 18</div></div></div></td><td style="text-align:right; font-weight:600;">45</td><td style="text-align:right; color:#555;">810</td></tr>
+          <tr><td>14</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/sc.png"><div><div class="team-name-main">Scotland</div><div class="team-matches-sub">Matches: 16</div></div></div></td><td style="text-align:right; font-weight:600;">40</td><td style="text-align:right; color:#555;">640</td></tr>
+          <tr><td>15</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/om.png"><div><div class="team-name-main">Oman</div><div class="team-matches-sub">Matches: 15</div></div></div></td><td style="text-align:right; font-weight:600;">32</td><td style="text-align:right; color:#555;">480</td></tr>
+          <tr><td>16</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/na.png"><div><div class="team-name-main">Namibia</div><div class="team-matches-sub">Matches: 14</div></div></div></td><td style="text-align:right; font-weight:600;">28</td><td style="text-align:right; color:#555;">392</td></tr>
+          <tr><td>17</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/np.png"><div><div class="team-name-main">Nepal</div><div class="team-matches-sub">Matches: 15</div></div></div></td><td style="text-align:right; font-weight:600;">25</td><td style="text-align:right; color:#555;">375</td></tr>
+          <tr><td>18</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/ae.png"><div><div class="team-name-main">UAE</div><div class="team-matches-sub">Matches: 14</div></div></div></td><td style="text-align:right; font-weight:600;">20</td><td style="text-align:right; color:#555;">280</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- T20I TABLE - 17 Teams -->
+    <div id="t20-content" class="sub-content">
+      <table class="rank-table">
+        <thead><tr><th>Rank</th><th>TEAM</th><th style="text-align:right;">Ratings</th><th style="text-align:right;">Points</th></tr></thead>
+        <tbody id="t20Tbody">
+          <tr><td>1</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/in.png"><div><div class="team-name-main">India</div><div class="team-matches-sub">Matches: 35</div></div></div></td><td style="text-align:right; font-weight:600;">263</td><td style="text-align:right; color:#555;">9200</td></tr>
+          <tr><td>2</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/au.png"><div><div class="team-name-main">Australia</div><div class="team-matches-sub">Matches: 32</div></div></div></td><td style="text-align:right; font-weight:600;">253</td><td style="text-align:right; color:#555;">8100</td></tr>
+          <tr><td>3</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/gb-eng.png"><div><div class="team-name-main">England</div><div class="team-matches-sub">Matches: 30</div></div></div></td><td style="text-align:right; font-weight:600;">247</td><td style="text-align:right; color:#555;">7400</td></tr>
+          <tr><td>4</td><td><div class="team-info"><img class="flag-img" src="https://flagcdn.com/w40/za.png"><div><div class="team-name-main">South Africa</div><div class="team-matches-sub">Matches: 28</div></div></div></td><td style="text-align:right; font-weight:600;">239</td><td style="text-align:right; color:#555;">6700</td></tr>
+          <tr><td>5</td><td><div class="team-info"><img class="flag-img"
